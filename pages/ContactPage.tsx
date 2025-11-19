@@ -35,24 +35,26 @@ const ContactPage: React.FC = () => {
     setStatus('submitting');
 
     try {
-      // We create a FormData object to send to the Google Script
-      // This method (using FormData and mode: 'no-cors') is the standard way to post to Google Apps Script
-      const data = new FormData();
-      data.append('firstName', formData.firstName);
-      data.append('lastName', formData.lastName);
-      data.append('email', formData.email);
-      data.append('website', formData.website);
-      data.append('message', formData.message);
-      // Add a timestamp
-      data.append('date', new Date().toLocaleString());
+      // FIX: Your script uses JSON.parse(), so we must send a JSON string.
+      // We cannot use FormData object here.
+      const payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        website: formData.website,
+        message: formData.message
+      };
 
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        body: data,
-        mode: "no-cors" // Important: Google Scripts don't return standard CORS headers so we use no-cors
+        body: JSON.stringify(payload), // Send as JSON String
+        mode: "no-cors", // Keep no-cors to avoid CORS errors with GAS
+        headers: {
+          "Content-Type": "text/plain" // Use text/plain to avoid preflight OPTIONS check
+        }
       });
 
-      // Since 'no-cors' returns an opaque response, we assume success if no error was thrown
+      // Since 'no-cors' returns an opaque response, we assume success if no network error was thrown
       setStatus('success');
       setFormData({ firstName: '', lastName: '', email: '', website: '', message: '' });
     } catch (error) {

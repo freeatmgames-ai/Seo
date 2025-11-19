@@ -1,3 +1,4 @@
+
 // Fix: Import React to resolve the 'Cannot find namespace 'JSX'' error.
 import React from 'react';
 
@@ -32,7 +33,7 @@ const portfolioProjects = [
 ];
 
 
-const SkillCard: React.FC<{ icon: JSX.Element; title: string }> = ({ icon, title }) => (
+const SkillCard: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => (
   <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center" data-aos="fade-up">
     <div className="text-blue-600 mb-4">{icon}</div>
     <h4 className="font-semibold text-gray-800">{title}</h4>
